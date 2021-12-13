@@ -1,24 +1,24 @@
 package iter
 
-type SliceIter[S ~[]Item, Item any] struct {
-	slice S
+type SliceIter[Item any] struct {
+	slice []Item
 	index int
 }
 
-func FromSlice[S ~[]Item, Item any](slice S) Iterator[Item] {
-	return &SliceIter[S, Item]{
+func FromSlice[Item any](slice []Item) Iterator[Item] {
+	return &SliceIter[Item]{
 		slice: slice,
 		index: 0,
 	}
 }
 
-func (si *SliceIter[S, Item]) Next() (_ Item, ok bool) {
+func (si *SliceIter[Item]) Next() (_ Item, ok bool) {
 	if si.index >= len(si.slice) {
 		var zero Item
 		return zero, false
 	}
 
-	value := si.slice[si.index]
+	item := si.slice[si.index]
 	si.index++
-	return value, true
+	return item, true
 }
