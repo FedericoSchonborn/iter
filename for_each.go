@@ -1,6 +1,6 @@
 package iter
 
-func ForEach[I Iterator[T], T any](iter I, fn func(T)) {
+func ForEach[I Iterator[Item], Item any](iter I, fn func(Item)) {
 	for {
 		value, ok := iter.Next()
 		if !ok {

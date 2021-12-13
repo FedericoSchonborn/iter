@@ -1,20 +1,20 @@
 package iter
 
-type SliceIter[S ~[]T, T any] struct {
+type SliceIter[S ~[]Item, Item any] struct {
 	slice S
 	index int
 }
 
-func FromSlice[S ~[]T, T any](slice S) Iterator[T] {
-	return &SliceIter[S, T]{
+func FromSlice[S ~[]Item, Item any](slice S) Iterator[Item] {
+	return &SliceIter[S, Item]{
 		slice: slice,
 		index: 0,
 	}
 }
 
-func (si *SliceIter[S, T]) Next() (_ T, ok bool) {
+func (si *SliceIter[S, Item]) Next() (_ Item, ok bool) {
 	if si.index >= len(si.slice) {
-		var zero T
+		var zero Item
 		return zero, false
 	}
 

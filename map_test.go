@@ -12,11 +12,12 @@ func ExampleMap() {
 		return 2 * x
 	})
 
-	fmt.Println(iter.Next())
-	fmt.Println(iter.Next())
-	fmt.Println(iter.Next())
+	for i := 0; i < 3; i++ {
+		j, _ := iter.Next()
+		fmt.Println(j)
+	}
 	// Output:
-	// 2 true
-	// 4 true
-	// 6 true
+	// 2
+	// 4
+	// 6
 }

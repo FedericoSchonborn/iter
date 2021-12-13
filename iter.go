@@ -1,5 +1,5 @@
 package iter
 
-type Iterator[T any] interface {
-	Next() (_ T, ok bool)
+type Iterator[Item any] interface {
+	Next() (_ Item, ok bool)
 }
