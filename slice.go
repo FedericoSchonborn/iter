@@ -5,9 +5,9 @@ type SliceIter[Item any] struct {
 	index int
 }
 
-func FromSlice[Item any](slice []Item) Iterator[Item] {
+func New[Item any](items ...Item) Iterator[Item] {
 	return &SliceIter[Item]{
-		slice: slice,
+		slice: items,
 		index: 0,
 	}
 }

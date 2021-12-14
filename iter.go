@@ -4,10 +4,6 @@ type Iterator[Item any] interface {
 	Next() (_ Item, ok bool)
 }
 
-func New[T any](a ...T) Iterator[T] {
-	return FromSlice(a)
-}
-
 func AdvanceBy[Item any](iter Iterator[Item], n int) (_ int, ok bool) {
 	for i := 0; i < n; i++ {
 		_, ok := iter.Next()
