@@ -223,6 +223,12 @@ func ExampleSuccessors() {
 	// [1 10 100 1000 10000]
 }
 
+func ExampleSum() {
+	fmt.Println(Sum(New(1, 2, 3)))
+	// Output:
+	// 6
+}
+
 func ExampleTake() {
 	iter := Take(New(1, 2, 3), 2)
 	printNextN(iter, 3)
