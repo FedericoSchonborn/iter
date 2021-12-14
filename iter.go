@@ -4,7 +4,7 @@ type Iterator[Item any] interface {
 	Next() (_ Item, ok bool)
 }
 
-func From[T any](a ...T) Iterator[T] {
+func New[T any](a ...T) Iterator[T] {
 	return FromSlice(a)
 }
 
@@ -49,6 +49,20 @@ func Any[Item any](iter Iterator[Item], fn func(Item) bool) bool {
 	return false
 }
 
+func Collect[Item any](iter Iterator[Item]) []Item {
+	slice := []Item{}
+	for {
+		item, ok := iter.Next()
+		if !ok {
+			break
+		}
+
+		slice = append(slice, item)
+	}
+
+	return slice
+}
+
 func Count[Item any](iter Iterator[Item]) int {
 	var n int
 	for {
@@ -86,18 +100,4 @@ func ForEach[Item any](iter Iterator[Item], fn func(Item)) {
 
 		fn(item)
 	}
-}
-
-func IntoSlice[Item any](iter Iterator[Item]) []Item {
-	slice := []Item{}
-	for {
-		item, ok := iter.Next()
-		if !ok {
-			break
-		}
-
-		slice = append(slice, item)
-	}
-
-	return slice
 }
