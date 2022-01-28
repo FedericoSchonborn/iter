@@ -180,10 +180,13 @@ func ExampleOnceWith() {
 }
 
 func ExampleProduct() {
-	fmt.Println(Product(New(0)))
-	fmt.Println(Product(New(1)))
-	fmt.Println(Product(New(1, 2, 3, 4, 5)))
+	factorial := func(n int) int {
+		return Product(RangeInclusive(1, n))
+	}
 
+	fmt.Println(factorial(0))
+	fmt.Println(factorial(1))
+	fmt.Println(factorial(5))
 	// Output:
 	// 0
 	// 1
