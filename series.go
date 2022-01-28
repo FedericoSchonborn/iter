@@ -16,9 +16,8 @@ func Series[Item constraints.Integer](start, end Item) Iterator[Item] {
 
 func (si *SeriesIter[Item]) Next() (_ Item, ok bool) {
 	if si.start < si.end {
-		n := si.start + Item(1)
 		start := si.start
-		si.start = n
+		si.start = start + Item(1)
 		return start, true
 	}
 

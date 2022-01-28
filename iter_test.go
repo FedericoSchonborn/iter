@@ -252,3 +252,14 @@ func ExampleTake() {
 	// 2 true
 	// 0 false
 }
+
+func ExampleZip() {
+	iter := Zip(New(1, 2, 3), New(4, 5, 6))
+	printNextN(iter, 4)
+
+	// Output:
+	// {1 4} true
+	// {2 5} true
+	// {3 6} true
+	// {0 0} false
+}
