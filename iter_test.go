@@ -179,6 +179,17 @@ func ExampleOnceWith() {
 	// 0 false
 }
 
+func ExampleProduct() {
+	fmt.Println(Product(New(0)))
+	fmt.Println(Product(New(1)))
+	fmt.Println(Product(New(1, 2, 3, 4, 5)))
+
+	// Output:
+	// 0
+	// 1
+	// 120
+}
+
 func ExampleRepeat() {
 	fourFours := Take(Repeat(4), 4)
 	printNextN(fourFours, 5)
