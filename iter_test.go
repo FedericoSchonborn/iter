@@ -181,7 +181,7 @@ func ExampleOnceWith() {
 
 func ExampleProduct() {
 	factorial := func(n int) int {
-		return Product(RangeInclusive(1, n))
+		return Product(SeriesInclusive(1, n))
 	}
 
 	fmt.Println(factorial(0))
