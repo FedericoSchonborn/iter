@@ -1,6 +1,6 @@
 package iter
 
-import "constraints"
+import "golang.org/x/exp/constraints"
 
 type SeriesInclusiveIter[Item constraints.Integer] struct {
 	start Item
