@@ -1,70 +1,86 @@
 package iter_test
 
 import (
-	"fmt"
-	"math"
-	"math/bits"
+	"testing"
 
 	"github.com/FedericoSchonborn/go-iter"
 )
 
-func PrintNext[T any](iter iter.Iterator[T], n int) {
-	for i := 0; i < n; i++ {
-		fmt.Println(iter.Next())
+func assert(t *testing.T, expr bool) {
+	if !expr {
+		t.Fatal("Assertion failed")
 	}
 }
 
-func ExampleIterator() {
-	iter := iter.New(1, 2, 3)
-	PrintNext(iter, 6)
-	// Output:
-	// 1 true
-	// 2 true
-	// 3 true
-	// 0 false
-	// 0 false
-	// 0 false
+func assertEqual[T comparable](t *testing.T, actual T, expected T) {
+	if actual != expected {
+		t.Fatalf("Expected value `%v`, got `%v` instead", actual, expected)
+	}
 }
 
-func ExampleAdvanceBy() {
-	var ok bool
-
-	i := iter.New(1, 2, 3, 4)
-
-	_, ok = iter.AdvanceBy(i, 2)
-	fmt.Println(ok)
-
-	item, _ := i.Next()
-	fmt.Println(item)
-
-	_, ok = iter.AdvanceBy(i, 0)
-	fmt.Println(ok)
-
-	n, _ := iter.AdvanceBy(i, 100)
-	fmt.Println(n)
-
-	// Output:
-	// true
-	// 3
-	// true
-	// 1
-}
-
-func ExampleAll() {
-	greaterThan := func(n int) func(int) bool {
-		return func(x int) bool {
-			return x > n
-		}
+func assertNext[T comparable](t *testing.T, iter iter.Iterator[T], expected T) {
+	item, ok := iter.Next()
+	if !ok {
+		t.Fatal("Expected iterator to return a value")
 	}
 
-	fmt.Println(iter.All(iter.New(1, 2, 3), greaterThan(0)))
-	fmt.Println(iter.All(iter.New(1, 2, 3), greaterThan(2)))
-	// Output:
-	// true
-	// false
+	assertEqual(t, item, expected)
 }
 
-func ExampleAny() {
+func assertNone[T any](t *testing.T, iter iter.Iterator[T]) {
+	if _, ok := iter.Next(); ok {
+		t.Fatal("Expected iterator to return no value")
+	}
+}
+
+func TestIterator(t *testing.T) {
+	a := []int{1, 2, 3}
+	it := iter.FromSlice(a)
+
+	assertNext(t, it, 1)
+	assertNext(t, it, 2)
+	assertNext(t, it, 3)
+	assertNone(t, it)
+	assertNone(t, it)
+	assertNone(t, it)
+}
+
+func TestAdvanceBy(t *testing.T) {
+	a := []int{1, 2, 3, 4}
+	it := iter.FromSlice(a)
+
+	n, ok := iter.AdvanceBy(it, 2)
+	assertEqual(t, n, 0)
+	assertEqual(t, ok, true)
+
+	assertNext(t, it, 3)
+
+	n, ok = iter.AdvanceBy(it, 0)
+	assertEqual(t, n, 0)
+	assertEqual(t, ok, true)
+
+	n, ok = iter.AdvanceBy(it, 100)
+	assertEqual(t, n, 1)
+	assertEqual(t, ok, false)
+}
+
+func TestAll_Basic(t *testing.T) {
+	a := []int{1, 2, 3}
+	assert(t, iter.All(iter.FromSlice(a), func(x int) bool { return x > 0 }))
+	assert(t, !iter.All(iter.FromSlice(a), func(x int) bool { return x > 2 }))
+}
+
+func TestAll_FirstFalse(t *testing.T) {
+	a := []int{1, 2, 3}
+	it := iter.FromSlice(a)
+
+	assert(t, !iter.All(it, func(x int) bool { return x != 2 }))
+
+	assertNext(t, it, 3)
+}
+
+/*
+func TestAny(t *testing.T) {
 	greaterThan := func(n int) func(int) bool {
 		return func(x int) bool {
 			return x > n
@@ -78,15 +94,15 @@ func ExampleAny() {
 	// false
 }
 
-func ExampleCount() {
-	fmt.Println(iter.Count(iter.New(1, 2, 3)))
-	fmt.Println(iter.Count(iter.New(1, 2, 3, 4, 5)))
-	// Output:
-	// 3
-	// 5
+func TestCount(t *testing.T) {
+	a := iter.New(1, 2, 3)
+	assertEqual(t, iter.Count(a), 3)
+
+	b := iter.New(1, 2, 3, 4, 5)
+	assertEqual(t, iter.Count(b), 5)
 }
 
-func ExampleEmpty() {
+func TestEmpty(t *testing.T) {
 	nope := iter.Empty[int]()
 	fmt.Println(nope.Next())
 
@@ -94,7 +110,7 @@ func ExampleEmpty() {
 	// 0 false
 }
 
-func ExampleEnumerate() {
+func TestEnumerate(t *testing.T) {
 	iter := iter.Enumerate(iter.New('a', 'b', 'c'))
 	PrintNext(iter, 4)
 
@@ -105,7 +121,7 @@ func ExampleEnumerate() {
 	// {0 0} false
 }
 
-func ExampleFilter() {
+func TestFilter(t *testing.T) {
 	isPositive := func(i int) bool {
 		return i > 0
 	}
@@ -119,7 +135,7 @@ func ExampleFilter() {
 	// 0 false
 }
 
-func ExampleFold() {
+func TestFold(t *testing.T) {
 	sum := iter.Fold(iter.New(1, 2, 3), 0, func(acc int, x int) int {
 		return acc + x
 	})
@@ -129,7 +145,7 @@ func ExampleFold() {
 	// 6
 }
 
-func ExampleForEach() {
+func TestForEach(t *testing.T) {
 	iter.ForEach(iter.New(1, 2, 3), func(x int) {
 		fmt.Println(x * 2)
 	})
@@ -140,7 +156,7 @@ func ExampleForEach() {
 	// 6
 }
 
-func ExampleFromFunc() {
+func TestFromFunc(t *testing.T) {
 	count := 0
 	counter := iter.FromFunc(func() (int, bool) {
 		count++
@@ -157,7 +173,7 @@ func ExampleFromFunc() {
 	// [1 2 3 4 5]
 }
 
-func ExampleCollect() {
+func TestCollect(t *testing.T) {
 	double := func(i int) int {
 		return i * 2
 	}
@@ -167,7 +183,7 @@ func ExampleCollect() {
 	// [2 4 6]
 }
 
-func ExampleMap() {
+func TestMap(t *testing.T) {
 	double := func(i int) int {
 		return i * 2
 	}
@@ -181,7 +197,7 @@ func ExampleMap() {
 	// 6 true
 }
 
-func ExampleOnce() {
+func TestOnce(t *testing.T) {
 	one := iter.Once(1)
 	PrintNext(one, 2)
 
@@ -190,7 +206,7 @@ func ExampleOnce() {
 	// 0 false
 }
 
-func ExampleOnceWith() {
+func TestOnceWith(t *testing.T) {
 	one := iter.OnceWith(func() int {
 		return 1
 	})
@@ -201,7 +217,7 @@ func ExampleOnceWith() {
 	// 0 false
 }
 
-func ExampleProduct() {
+func TestProduct(t *testing.T) {
 	factorial := func(n int) int {
 		return iter.Product(iter.SeriesInclusive(1, n))
 	}
@@ -215,7 +231,7 @@ func ExampleProduct() {
 	// 120
 }
 
-func ExampleRepeat() {
+func TestRepeat(t *testing.T) {
 	fourFours := iter.Take(iter.Repeat(4), 4)
 	PrintNext(fourFours, 5)
 
@@ -227,7 +243,7 @@ func ExampleRepeat() {
 	// 0 false
 }
 
-func ExampleRepeatWith() {
+func TestRepeatWith(t *testing.T) {
 	curr := 1
 	pow2 := iter.Take(iter.RepeatWith(func() int {
 		tmp := curr
@@ -244,7 +260,7 @@ func ExampleRepeatWith() {
 	// 0 false
 }
 
-func ExampleSuccessors() {
+func TestSuccessors(t *testing.T) {
 	powersOf10 := iter.Successors(1, func(n uint) (uint, bool) {
 		_, lo := bits.Mul(n, 10)
 		if lo >= math.MaxUint16 {
@@ -259,13 +275,13 @@ func ExampleSuccessors() {
 	// [1 10 100 1000 10000]
 }
 
-func ExampleSum() {
+func TestSum(t *testing.T) {
 	fmt.Println(iter.Sum(iter.New(1, 2, 3)))
 	// Output:
 	// 6
 }
 
-func ExampleTake() {
+func TestTake(t *testing.T) {
 	iter := iter.Take(iter.New(1, 2, 3), 2)
 	PrintNext(iter, 3)
 
@@ -275,7 +291,7 @@ func ExampleTake() {
 	// 0 false
 }
 
-func ExampleZip() {
+func TestZip(t *testing.T) {
 	iter := iter.Zip(iter.New(1, 2, 3), iter.New(4, 5, 6))
 	PrintNext(iter, 4)
 
@@ -285,3 +301,4 @@ func ExampleZip() {
 	// {3 6} true
 	// {0 0} false
 }
+*/
