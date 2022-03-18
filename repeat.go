@@ -1,15 +1,15 @@
 package iter
 
-type RepeatIter[Item any] struct {
-	item Item
+type repeatIter[T any] struct {
+	item T
 }
 
-func Repeat[Item any](item Item) Iterator[Item] {
-	return &RepeatIter[Item]{
+func Repeat[T any](item T) Iterator[T] {
+	return &repeatIter[T]{
 		item: item,
 	}
 }
 
-func (ri *RepeatIter[Item]) Next() (_ Item, ok bool) {
+func (ri *repeatIter[T]) Next() (_ T, ok bool) {
 	return ri.item, true
 }

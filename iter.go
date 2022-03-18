@@ -1,11 +1,15 @@
 // Package iter provides generic lazy iterators compatible with Go 1.18+.
 package iter
 
-type Iterator[Item any] interface {
-	Next() (_ Item, ok bool)
+type Iterator[T any] interface {
+	Next() (_ T, ok bool)
 }
 
-func AdvanceBy[Item any](iter Iterator[Item], n int) (_ int, ok bool) {
+func New[T any](items ...T) Iterator[T] {
+	return FromSlice(items)
+}
+
+func AdvanceBy[T any](iter Iterator[T], n int) (_ int, ok bool) {
 	for i := 0; i < n; i++ {
 		_, ok := iter.Next()
 		if !ok {
@@ -16,7 +20,7 @@ func AdvanceBy[Item any](iter Iterator[Item], n int) (_ int, ok bool) {
 	return 0, true
 }
 
-func All[Item any](iter Iterator[Item], fn func(Item) bool) bool {
+func All[T any](iter Iterator[T], fn func(T) bool) bool {
 	for {
 		item, ok := iter.Next()
 		if !ok {
@@ -31,7 +35,7 @@ func All[Item any](iter Iterator[Item], fn func(Item) bool) bool {
 	return true
 }
 
-func Any[Item any](iter Iterator[Item], fn func(Item) bool) bool {
+func Any[T any](iter Iterator[T], fn func(T) bool) bool {
 	for {
 		item, ok := iter.Next()
 		if !ok {
@@ -46,8 +50,8 @@ func Any[Item any](iter Iterator[Item], fn func(Item) bool) bool {
 	return false
 }
 
-func Collect[Item any](iter Iterator[Item]) []Item {
-	slice := []Item{}
+func Collect[T any](iter Iterator[T]) []T {
+	slice := []T{}
 	for {
 		item, ok := iter.Next()
 		if !ok {
@@ -60,7 +64,7 @@ func Collect[Item any](iter Iterator[Item]) []Item {
 	return slice
 }
 
-func Count[Item any](iter Iterator[Item]) int {
+func Count[T any](iter Iterator[T]) int {
 	var n int
 	for {
 		_, ok := iter.Next()
@@ -74,7 +78,7 @@ func Count[Item any](iter Iterator[Item]) int {
 	return n
 }
 
-func Fold[Item, B any](iter Iterator[Item], init B, fn func(B, Item) B) B {
+func Fold[T, B any](iter Iterator[T], init B, fn func(B, T) B) B {
 	acc := init
 	for {
 		item, ok := iter.Next()
@@ -88,7 +92,7 @@ func Fold[Item, B any](iter Iterator[Item], init B, fn func(B, Item) B) B {
 	return acc
 }
 
-func ForEach[Item any](iter Iterator[Item], fn func(Item)) {
+func ForEach[T any](iter Iterator[T], fn func(T)) {
 	for {
 		item, ok := iter.Next()
 		if !ok {

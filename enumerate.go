@@ -1,30 +1,30 @@
 package iter
 
-type EnumerateItem[Item any] struct {
+type Enumerated[T any] struct {
 	Index int
-	Value Item
+	Value T
 }
 
-type EnumerateIter[Item any] struct {
-	iter  Iterator[Item]
+type enumerateIter[T any] struct {
+	iter  Iterator[T]
 	index int
 }
 
-func Enumerate[Item any](iter Iterator[Item]) Iterator[EnumerateItem[Item]] {
-	return &EnumerateIter[Item]{
+func Enumerate[T any](iter Iterator[T]) Iterator[Enumerated[T]] {
+	return &enumerateIter[T]{
 		iter:  iter,
 		index: 0,
 	}
 }
 
-func (ei *EnumerateIter[Item]) Next() (_ EnumerateItem[Item], ok bool) {
+func (ei *enumerateIter[T]) Next() (_ Enumerated[T], ok bool) {
 	item, ok := ei.iter.Next()
 	if !ok {
-		var zero EnumerateItem[Item]
+		var zero Enumerated[T]
 		return zero, false
 	}
 
-	value := EnumerateItem[Item]{
+	value := Enumerated[T]{
 		Index: ei.index,
 		Value: item,
 	}

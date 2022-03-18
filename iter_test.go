@@ -5,10 +5,10 @@ import (
 	"math"
 	"math/bits"
 
-	"github.com/fdschonborn/go-iter"
+	"github.com/FedericoSchonborn/go-iter"
 )
 
-func PrintNext[Item any](iter iter.Iterator[Item], n int) {
+func PrintNext[T any](iter iter.Iterator[T], n int) {
 	for i := 0; i < n; i++ {
 		fmt.Println(iter.Next())
 	}

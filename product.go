@@ -1,9 +1,11 @@
 package iter
 
-func Product[Item Number](iter Iterator[Item]) Item {
+import "golang.org/x/exp/constraints"
+
+func Product[T constraints.Integer | constraints.Float | constraints.Complex](iter Iterator[T]) T {
 	total, ok := iter.Next()
 	if !ok {
-		var zero Item
+		var zero T
 		return zero
 	}
 

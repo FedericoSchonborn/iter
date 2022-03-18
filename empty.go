@@ -1,12 +1,12 @@
 package iter
 
-type EmptyIter[Item any] struct{}
+type emptyIter[T any] struct{}
 
-func Empty[Item any]() Iterator[Item] {
-	return &EmptyIter[Item]{}
+func Empty[T any]() Iterator[T] {
+	return &emptyIter[T]{}
 }
 
-func (*EmptyIter[Item]) Next() (_ Item, ok bool) {
-	var zero Item
+func (*emptyIter[T]) Next() (_ T, ok bool) {
+	var zero T
 	return zero, false
 }

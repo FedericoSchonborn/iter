@@ -1,20 +1,20 @@
 package iter
 
-type OnceWithIter[Item any] struct {
-	fn   func() Item
+type onceWithIter[T any] struct {
+	fn   func() T
 	done bool
 }
 
-func OnceWith[Item any](fn func() Item) Iterator[Item] {
-	return &OnceWithIter[Item]{
+func OnceWith[T any](fn func() T) Iterator[T] {
+	return &onceWithIter[T]{
 		fn:   fn,
 		done: false,
 	}
 }
 
-func (owi *OnceWithIter[Item]) Next() (_ Item, ok bool) {
+func (owi *onceWithIter[T]) Next() (_ T, ok bool) {
 	if owi.done {
-		var zero Item
+		var zero T
 		return zero, false
 	}
 

@@ -1,3 +1,3 @@
 # Iter
 
-Package `iter` provides generic lazy iterators for Go 1.18+.
+Package `iter` provides generic lazy iterators compatible with Go 1.18+.

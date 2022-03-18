@@ -1,7 +1,9 @@
 package iter
 
-func Sum[Item Number | ~string](iter Iterator[Item]) Item {
-	var total Item
+import "golang.org/x/exp/constraints"
+
+func Sum[T constraints.Integer | constraints.Float | constraints.Complex | ~string](iter Iterator[T]) T {
+	var total T
 	for {
 		item, ok := iter.Next()
 		if !ok {

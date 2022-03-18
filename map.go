@@ -1,18 +1,18 @@
 package iter
 
-type MapIter[Item, B any] struct {
-	iter Iterator[Item]
-	fn   func(Item) B
+type mapIter[T, B any] struct {
+	iter Iterator[T]
+	fn   func(T) B
 }
 
-func Map[Item, B any](iter Iterator[Item], fn func(Item) B) Iterator[B] {
-	return &MapIter[Item, B]{
+func Map[T, B any](iter Iterator[T], fn func(T) B) Iterator[B] {
+	return &mapIter[T, B]{
 		iter: iter,
 		fn:   fn,
 	}
 }
 
-func (mi *MapIter[Item, B]) Next() (_ B, ok bool) {
+func (mi *mapIter[T, B]) Next() (_ B, ok bool) {
 	item, ok := mi.iter.Next()
 	if !ok {
 		var zero B

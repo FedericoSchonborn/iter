@@ -1,26 +1,26 @@
 package iter
 
-type TakeIter[Item any] struct {
-	iter  Iterator[Item]
+type takeIter[T any] struct {
+	iter  Iterator[T]
 	count int
 }
 
-func Take[Item any](iter Iterator[Item], n int) Iterator[Item] {
-	return &TakeIter[Item]{
+func Take[T any](iter Iterator[T], n int) Iterator[T] {
+	return &takeIter[T]{
 		iter:  iter,
 		count: n,
 	}
 }
 
-func (ti *TakeIter[Item]) Next() (_ Item, ok bool) {
+func (ti *takeIter[T]) Next() (_ T, ok bool) {
 	if ti.count <= 0 {
-		var zero Item
+		var zero T
 		return zero, false
 	}
 
 	item, ok := ti.iter.Next()
 	if !ok {
-		var zero Item
+		var zero T
 		return zero, false
 	}
 

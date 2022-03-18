@@ -2,25 +2,25 @@ package iter
 
 import "golang.org/x/exp/constraints"
 
-type SeriesIter[Item constraints.Integer] struct {
-	start Item
-	end   Item
+type seriesIter[T constraints.Integer] struct {
+	start T
+	end   T
 }
 
-func Series[Item constraints.Integer](start, end Item) Iterator[Item] {
-	return &SeriesIter[Item]{
+func Series[T constraints.Integer](start, end T) Iterator[T] {
+	return &seriesIter[T]{
 		start: start,
 		end:   end,
 	}
 }
 
-func (si *SeriesIter[Item]) Next() (_ Item, ok bool) {
+func (si *seriesIter[T]) Next() (_ T, ok bool) {
 	if si.start < si.end {
 		start := si.start
-		si.start = start + Item(1)
+		si.start = start + T(1)
 		return start, true
 	}
 
-	var zero Item
+	var zero T
 	return zero, false
 }
