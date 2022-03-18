@@ -5,24 +5,10 @@ import (
 	"math"
 	"math/bits"
 
-	. "github.com/fdschonborn/go-iter"
+	"github.com/fdschonborn/go-iter"
 )
 
-func greaterThan(n int) func(int) bool {
-	return func(x int) bool {
-		return x > n
-	}
-}
-
-func isPositive(n int) bool {
-	return n > 0
-}
-
-func double(n int) int {
-	return n * 2
-}
-
-func printNextN[Item any](iter Iterator[Item], n int) {
+func PrintNext[Item any](iter iter.Iterator[Item], n int) {
 	for i := 0; i < n; i++ {
 		fmt.Println(iter.Next())
 	}
@@ -31,18 +17,18 @@ func printNextN[Item any](iter Iterator[Item], n int) {
 func ExampleAdvanceBy() {
 	var ok bool
 
-	iter := New(1, 2, 3, 4)
+	i := iter.New(1, 2, 3, 4)
 
-	_, ok = AdvanceBy(iter, 2)
+	_, ok = iter.AdvanceBy(i, 2)
 	fmt.Println(ok)
 
-	item, _ := iter.Next()
+	item, _ := i.Next()
 	fmt.Println(item)
 
-	_, ok = AdvanceBy(iter, 0)
+	_, ok = iter.AdvanceBy(i, 0)
 	fmt.Println(ok)
 
-	n, _ := AdvanceBy(iter, 100)
+	n, _ := iter.AdvanceBy(i, 100)
 	fmt.Println(n)
 
 	// Output:
@@ -53,31 +39,43 @@ func ExampleAdvanceBy() {
 }
 
 func ExampleAll() {
-	fmt.Println(All(New(1, 2, 3), greaterThan(0)))
-	fmt.Println(All(New(1, 2, 3), greaterThan(2)))
+	greaterThan := func(n int) func(int) bool {
+		return func(x int) bool {
+			return x > n
+		}
+	}
+
+	fmt.Println(iter.All(iter.New(1, 2, 3), greaterThan(0)))
+	fmt.Println(iter.All(iter.New(1, 2, 3), greaterThan(2)))
 	// Output:
 	// true
 	// false
 }
 
 func ExampleAny() {
-	fmt.Println(Any(New(1, 2, 3), greaterThan(0)))
-	fmt.Println(Any(New(1, 2, 3), greaterThan(5)))
+	greaterThan := func(n int) func(int) bool {
+		return func(x int) bool {
+			return x > n
+		}
+	}
+
+	fmt.Println(iter.Any(iter.New(1, 2, 3), greaterThan(0)))
+	fmt.Println(iter.Any(iter.New(1, 2, 3), greaterThan(5)))
 	// Output:
 	// true
 	// false
 }
 
 func ExampleCount() {
-	fmt.Println(Count(New(1, 2, 3)))
-	fmt.Println(Count(New(1, 2, 3, 4, 5)))
+	fmt.Println(iter.Count(iter.New(1, 2, 3)))
+	fmt.Println(iter.Count(iter.New(1, 2, 3, 4, 5)))
 	// Output:
 	// 3
 	// 5
 }
 
 func ExampleEmpty() {
-	nope := Empty[int]()
+	nope := iter.Empty[int]()
 	fmt.Println(nope.Next())
 
 	// Output:
@@ -85,8 +83,8 @@ func ExampleEmpty() {
 }
 
 func ExampleEnumerate() {
-	iter := Enumerate(New('a', 'b', 'c'))
-	printNextN(iter, 4)
+	iter := iter.Enumerate(iter.New('a', 'b', 'c'))
+	PrintNext(iter, 4)
 
 	// Output:
 	// {0 97} true
@@ -96,8 +94,12 @@ func ExampleEnumerate() {
 }
 
 func ExampleFilter() {
-	iter := Filter(New(0, 1, 2), isPositive)
-	printNextN(iter, 3)
+	isPositive := func(i int) bool {
+		return i >= 0
+	}
+
+	iter := iter.Filter(iter.New(0, 1, 2), isPositive)
+	PrintNext(iter, 3)
 
 	// Output:
 	// 1 true
@@ -106,7 +108,7 @@ func ExampleFilter() {
 }
 
 func ExampleFold() {
-	sum := Fold(New(1, 2, 3), 0, func(acc int, x int) int {
+	sum := iter.Fold(iter.New(1, 2, 3), 0, func(acc int, x int) int {
 		return acc + x
 	})
 
@@ -116,7 +118,7 @@ func ExampleFold() {
 }
 
 func ExampleForEach() {
-	ForEach(New(1, 2, 3), func(x int) {
+	iter.ForEach(iter.New(1, 2, 3), func(x int) {
 		fmt.Println(x * 2)
 	})
 
@@ -128,7 +130,7 @@ func ExampleForEach() {
 
 func ExampleFromFunc() {
 	count := 0
-	counter := FromFunc(func() (int, bool) {
+	counter := iter.FromFunc(func() (int, bool) {
 		count++
 
 		if count < 6 {
@@ -138,20 +140,28 @@ func ExampleFromFunc() {
 		return 0, false
 	})
 
-	fmt.Println(Collect(counter))
+	fmt.Println(iter.Collect(counter))
 	// Output:
 	// [1 2 3 4 5]
 }
 
 func ExampleCollect() {
-	fmt.Println(Collect(Map(New(1, 2, 3), double)))
+	double := func(i int) int {
+		return i * 2
+	}
+
+	fmt.Println(iter.Collect(iter.Map(iter.New(1, 2, 3), double)))
 	// Output:
 	// [2 4 6]
 }
 
 func ExampleMap() {
-	iter := Map(New(1, 2, 3), double)
-	printNextN(iter, 3)
+	double := func(i int) int {
+		return i * 2
+	}
+
+	iter := iter.Map(iter.New(1, 2, 3), double)
+	PrintNext(iter, 3)
 
 	// Output:
 	// 2 true
@@ -160,8 +170,8 @@ func ExampleMap() {
 }
 
 func ExampleOnce() {
-	one := Once(1)
-	printNextN(one, 2)
+	one := iter.Once(1)
+	PrintNext(one, 2)
 
 	// Output:
 	// 1 true
@@ -169,10 +179,10 @@ func ExampleOnce() {
 }
 
 func ExampleOnceWith() {
-	one := OnceWith(func() int {
+	one := iter.OnceWith(func() int {
 		return 1
 	})
-	printNextN(one, 2)
+	PrintNext(one, 2)
 
 	// Output:
 	// 1 true
@@ -181,7 +191,7 @@ func ExampleOnceWith() {
 
 func ExampleProduct() {
 	factorial := func(n int) int {
-		return Product(SeriesInclusive(1, n))
+		return iter.Product(iter.SeriesInclusive(1, n))
 	}
 
 	fmt.Println(factorial(0))
@@ -194,8 +204,8 @@ func ExampleProduct() {
 }
 
 func ExampleRepeat() {
-	fourFours := Take(Repeat(4), 4)
-	printNextN(fourFours, 5)
+	fourFours := iter.Take(iter.Repeat(4), 4)
+	PrintNext(fourFours, 5)
 
 	// Output:
 	// 4 true
@@ -207,12 +217,12 @@ func ExampleRepeat() {
 
 func ExampleRepeatWith() {
 	curr := 1
-	pow2 := Take(RepeatWith(func() int {
+	pow2 := iter.Take(iter.RepeatWith(func() int {
 		tmp := curr
 		curr *= 2
 		return tmp
 	}), 4)
-	printNextN(pow2, 5)
+	PrintNext(pow2, 5)
 
 	// Output:
 	// 1 true
@@ -223,7 +233,7 @@ func ExampleRepeatWith() {
 }
 
 func ExampleSuccessors() {
-	powersOf10 := Successors(1, func(n uint) (uint, bool) {
+	powersOf10 := iter.Successors(1, func(n uint) (uint, bool) {
 		_, lo := bits.Mul(n, 10)
 		if lo >= math.MaxUint16 {
 			return 0, false
@@ -231,21 +241,21 @@ func ExampleSuccessors() {
 
 		return lo, true
 	})
-	fmt.Println(Collect(powersOf10))
+	fmt.Println(iter.Collect(powersOf10))
 
 	// Output:
 	// [1 10 100 1000 10000]
 }
 
 func ExampleSum() {
-	fmt.Println(Sum(New(1, 2, 3)))
+	fmt.Println(iter.Sum(iter.New(1, 2, 3)))
 	// Output:
 	// 6
 }
 
 func ExampleTake() {
-	iter := Take(New(1, 2, 3), 2)
-	printNextN(iter, 3)
+	iter := iter.Take(iter.New(1, 2, 3), 2)
+	PrintNext(iter, 3)
 
 	// Output:
 	// 1 true
@@ -254,8 +264,8 @@ func ExampleTake() {
 }
 
 func ExampleZip() {
-	iter := Zip(New(1, 2, 3), New(4, 5, 6))
-	printNextN(iter, 4)
+	iter := iter.Zip(iter.New(1, 2, 3), iter.New(4, 5, 6))
+	PrintNext(iter, 4)
 
 	// Output:
 	// {1 4} true
