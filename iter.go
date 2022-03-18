@@ -1,3 +1,4 @@
+// Package iter provides generic lazy iterators compatible with Go 1.18+.
 package iter
 
 type Iterator[Item any] interface {

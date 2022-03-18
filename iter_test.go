@@ -14,6 +14,18 @@ func PrintNext[Item any](iter iter.Iterator[Item], n int) {
 	}
 }
 
+func ExampleIterator() {
+	iter := iter.New(1, 2, 3)
+	PrintNext(iter, 6)
+	// Output:
+	// 1 true
+	// 2 true
+	// 3 true
+	// 0 false
+	// 0 false
+	// 0 false
+}
+
 func ExampleAdvanceBy() {
 	var ok bool
 
@@ -95,7 +107,7 @@ func ExampleEnumerate() {
 
 func ExampleFilter() {
 	isPositive := func(i int) bool {
-		return i >= 0
+		return i > 0
 	}
 
 	iter := iter.Filter(iter.New(0, 1, 2), isPositive)
