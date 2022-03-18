@@ -5,7 +5,7 @@ import (
 	"math"
 	"math/bits"
 
-	. "github.com/fdschonborn/iter.go"
+	. "github.com/fdschonborn/go-iter"
 )
 
 func greaterThan(n int) func(int) bool {
