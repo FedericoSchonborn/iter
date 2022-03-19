@@ -2,4 +2,4 @@ module github.com/FedericoSchonborn/go-iter
 
 go 1.18
 
-require golang.org/x/exp v0.0.0-20220317015231-48e79f11773a
+require golang.org/x/exp v0.0.0-20220318154914-8dddf5d87bd8

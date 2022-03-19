@@ -1,15 +1,15 @@
 package iter
 
-type fromFuncIter[T any] struct {
+type FromFuncIterator[T any] struct {
 	fn func() (T, bool)
 }
 
-func FromFunc[T any](fn func() (T, bool)) Iterator[T] {
-	return &fromFuncIter[T]{
+func FromFunc[T any](fn func() (T, bool)) *FromFuncIterator[T] {
+	return &FromFuncIterator[T]{
 		fn: fn,
 	}
 }
 
-func (ffi *fromFuncIter[T]) Next() (_ T, ok bool) {
+func (ffi *FromFuncIterator[T]) Next() (_ T, ok bool) {
 	return ffi.fn()
 }

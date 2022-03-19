@@ -1,18 +1,18 @@
 package iter
 
-type filterIter[T any] struct {
+type FilterIterator[T any] struct {
 	iter Iterator[T]
 	fn   func(T) bool
 }
 
-func Filter[T any](iter Iterator[T], fn func(T) bool) Iterator[T] {
-	return &filterIter[T]{
+func Filter[T any](iter Iterator[T], fn func(T) bool) *FilterIterator[T] {
+	return &FilterIterator[T]{
 		iter: iter,
 		fn:   fn,
 	}
 }
 
-func (fi *filterIter[T]) Next() (_ T, ok bool) {
+func (fi *FilterIterator[T]) Next() (_ T, ok bool) {
 	for {
 		item, ok := fi.iter.Next()
 		if !ok {

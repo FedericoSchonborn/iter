@@ -1,12 +1,23 @@
 package iter
 
-type emptyIter[T any] struct{}
+var _ SizedBilateralIterator[any] = (*EmptyIterator[any])(nil)
 
-func Empty[T any]() Iterator[T] {
-	return &emptyIter[T]{}
+type EmptyIterator[T any] struct{}
+
+func Empty[T any]() *EmptyIterator[T] {
+	return &EmptyIterator[T]{}
 }
 
-func (*emptyIter[T]) Next() (_ T, ok bool) {
+func (*EmptyIterator[T]) Next() (_ T, ok bool) {
 	var zero T
 	return zero, false
+}
+
+func (*EmptyIterator[T]) NextBack() (_ T, ok bool) {
+	var zero T
+	return zero, false
+}
+
+func (*EmptyIterator[T]) Len() int {
+	return 0
 }

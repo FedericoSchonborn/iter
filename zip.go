@@ -5,19 +5,19 @@ type Zipped[L, R any] struct {
 	Right R
 }
 
-type zipIter[L, R any] struct {
+type ZipIterator[L, R any] struct {
 	left  Iterator[L]
 	right Iterator[R]
 }
 
-func Zip[L, R any](left Iterator[L], right Iterator[R]) Iterator[Zipped[L, R]] {
-	return &zipIter[L, R]{
+func Zip[L, R any, LI Iterator[L], RI Iterator[R]](left LI, right RI) *ZipIterator[L, R] {
+	return &ZipIterator[L, R]{
 		left:  left,
 		right: right,
 	}
 }
 
-func (zi *zipIter[L, R]) Next() (_ Zipped[L, R], ok bool) {
+func (zi *ZipIterator[L, R]) Next() (_ Zipped[L, R], ok bool) {
 	lv, ok := zi.left.Next()
 	if !ok {
 		var zero Zipped[L, R]

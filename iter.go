@@ -1,6 +1,8 @@
 // Package iter provides generic lazy iterators compatible with Go 1.18+.
 package iter
 
+import "golang.org/x/exp/constraints"
+
 type Iterator[T any] interface {
 	Next() (_ T, ok bool)
 }
@@ -18,10 +20,6 @@ type SizedIterator[T any] interface {
 type SizedBilateralIterator[T any] interface {
 	BilateralIterator[T]
 	SizedIterator[T]
-}
-
-func New[T any](items ...T) Iterator[T] {
-	return FromSlice(items)
 }
 
 func AdvanceBy[T any](iter Iterator[T], n int) (_ int, ok bool) {
@@ -116,4 +114,37 @@ func ForEach[T any](iter Iterator[T], fn func(T)) {
 
 		fn(item)
 	}
+}
+
+func Product[T constraints.Integer | constraints.Float | constraints.Complex](iter Iterator[T]) T {
+	total, ok := iter.Next()
+	if !ok {
+		var zero T
+		return zero
+	}
+
+	for {
+		item, ok := iter.Next()
+		if !ok {
+			break
+		}
+
+		total *= item
+	}
+
+	return total
+}
+
+func Sum[T constraints.Integer | constraints.Float | constraints.Complex | ~string](iter Iterator[T]) T {
+	var total T
+	for {
+		item, ok := iter.Next()
+		if !ok {
+			break
+		}
+
+		total += item
+	}
+
+	return total
 }
