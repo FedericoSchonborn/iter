@@ -1,24 +1,42 @@
 package iter
 
+var _ SizedBilateralIterator[any] = (*fromSliceIter[any])(nil)
+
 type fromSliceIter[T any] struct {
-	slice []T
-	index int
+	inner []T
+	front int
+	back  int
 }
 
-func FromSlice[T any](slice []T) Iterator[T] {
+func FromSlice[T any, S ~[]T](slice S) Iterator[T] {
 	return &fromSliceIter[T]{
-		slice: slice,
-		index: 0,
+		inner: slice,
+		front: 0,
 	}
 }
 
-func (si *fromSliceIter[T]) Next() (_ T, ok bool) {
-	if si.index >= len(si.slice) {
+func (fsi *fromSliceIter[T]) Next() (_ T, ok bool) {
+	if fsi.front >= len(fsi.inner) {
 		var zero T
 		return zero, false
 	}
 
-	item := si.slice[si.index]
-	si.index++
+	item := fsi.inner[fsi.front]
+	fsi.front++
 	return item, true
+}
+
+func (fsi *fromSliceIter[T]) NextBack() (_ T, ok bool) {
+	if fsi.back < 0 {
+		var zero T
+		return zero, false
+	}
+
+	item := fsi.inner[fsi.back]
+	fsi.back--
+	return item, true
+}
+
+func (fsi *fromSliceIter[T]) Len() int {
+	return len(fsi.inner)
 }

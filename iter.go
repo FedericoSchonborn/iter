@@ -5,6 +5,21 @@ type Iterator[T any] interface {
 	Next() (_ T, ok bool)
 }
 
+type BilateralIterator[T any] interface {
+	Iterator[T]
+	NextBack() (_ T, ok bool)
+}
+
+type SizedIterator[T any] interface {
+	Iterator[T]
+	Len() int
+}
+
+type SizedBilateralIterator[T any] interface {
+	BilateralIterator[T]
+	SizedIterator[T]
+}
+
 func New[T any](items ...T) Iterator[T] {
 	return FromSlice(items)
 }
