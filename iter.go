@@ -22,7 +22,7 @@ type SizedBilateralIterator[T any] interface {
 	SizedIterator[T]
 }
 
-func AdvanceBy[T any](iter Iterator[T], n int) (_ int, ok bool) {
+func AdvanceBy[T any, I Iterator[T]](iter I, n int) (_ int, ok bool) {
 	for i := 0; i < n; i++ {
 		_, ok := iter.Next()
 		if !ok {
@@ -33,7 +33,7 @@ func AdvanceBy[T any](iter Iterator[T], n int) (_ int, ok bool) {
 	return 0, true
 }
 
-func All[T any](iter Iterator[T], fn func(T) bool) bool {
+func All[T any, I Iterator[T]](iter I, fn func(T) bool) bool {
 	for {
 		item, ok := iter.Next()
 		if !ok {
@@ -48,7 +48,7 @@ func All[T any](iter Iterator[T], fn func(T) bool) bool {
 	return true
 }
 
-func Any[T any](iter Iterator[T], fn func(T) bool) bool {
+func Any[T any, I Iterator[T]](iter I, fn func(T) bool) bool {
 	for {
 		item, ok := iter.Next()
 		if !ok {
@@ -63,7 +63,7 @@ func Any[T any](iter Iterator[T], fn func(T) bool) bool {
 	return false
 }
 
-func Collect[T any](iter Iterator[T]) []T {
+func Collect[T any, I Iterator[T]](iter I) []T {
 	slice := []T{}
 	for {
 		item, ok := iter.Next()
@@ -77,7 +77,7 @@ func Collect[T any](iter Iterator[T]) []T {
 	return slice
 }
 
-func Count[T any](iter Iterator[T]) int {
+func Count[T any, I Iterator[T]](iter I) int {
 	var n int
 	for {
 		_, ok := iter.Next()
@@ -91,7 +91,7 @@ func Count[T any](iter Iterator[T]) int {
 	return n
 }
 
-func Fold[T, B any](iter Iterator[T], init B, fn func(B, T) B) B {
+func Fold[T, B any, I Iterator[T]](iter I, init B, fn func(B, T) B) B {
 	acc := init
 	for {
 		item, ok := iter.Next()
@@ -105,7 +105,7 @@ func Fold[T, B any](iter Iterator[T], init B, fn func(B, T) B) B {
 	return acc
 }
 
-func ForEach[T any](iter Iterator[T], fn func(T)) {
+func ForEach[T any, I Iterator[T]](iter I, fn func(T)) {
 	for {
 		item, ok := iter.Next()
 		if !ok {
@@ -116,7 +116,7 @@ func ForEach[T any](iter Iterator[T], fn func(T)) {
 	}
 }
 
-func Product[T constraints.Integer | constraints.Float | constraints.Complex](iter Iterator[T]) T {
+func Product[T constraints.Integer | constraints.Float | constraints.Complex, I Iterator[T]](iter I) T {
 	total, ok := iter.Next()
 	if !ok {
 		var zero T
@@ -135,7 +135,7 @@ func Product[T constraints.Integer | constraints.Float | constraints.Complex](it
 	return total
 }
 
-func Sum[T constraints.Integer | constraints.Float | constraints.Complex | ~string](iter Iterator[T]) T {
+func Sum[T constraints.Integer | constraints.Float | constraints.Complex | ~string, I Iterator[T]](iter I) T {
 	var total T
 	for {
 		item, ok := iter.Next()

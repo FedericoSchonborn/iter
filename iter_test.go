@@ -67,15 +67,15 @@ func TestAdvanceBy(t *testing.T) {
 
 func TestAll_Basic(t *testing.T) {
 	a := []int{1, 2, 3}
-	assert(t, iter.All[int](slices.NewIterator(a), func(x int) bool { return x > 0 }))
-	assert(t, !iter.All[int](slices.NewIterator(a), func(x int) bool { return x > 2 }))
+	assert(t, iter.All(slices.NewIterator(a), func(x int) bool { return x > 0 }))
+	assert(t, !iter.All(slices.NewIterator(a), func(x int) bool { return x > 2 }))
 }
 
 func TestAll_FirstFalse(t *testing.T) {
 	a := []int{1, 2, 3}
 	it := slices.NewIterator(a)
 
-	assert(t, !iter.All[int](it, func(x int) bool { return x != 2 }))
+	assert(t, !iter.All(it, func(x int) bool { return x != 2 }))
 
 	assertNext(t, it, 3)
 }

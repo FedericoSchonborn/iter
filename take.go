@@ -1,18 +1,18 @@
 package iter
 
-type TakeIterator[T any] struct {
-	iter  Iterator[T]
+type TakeIterator[T any, I Iterator[T]] struct {
+	iter  I
 	count int
 }
 
-func Take[T any](iter Iterator[T], n int) *TakeIterator[T] {
-	return &TakeIterator[T]{
+func Take[T any, I Iterator[T]](iter I, n int) *TakeIterator[T, I] {
+	return &TakeIterator[T, I]{
 		iter:  iter,
 		count: n,
 	}
 }
 
-func (ti *TakeIterator[T]) Next() (_ T, ok bool) {
+func (ti *TakeIterator[T, I]) Next() (_ T, ok bool) {
 	if ti.count <= 0 {
 		var zero T
 		return zero, false
