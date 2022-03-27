@@ -15,12 +15,21 @@ func assert(t *testing.T, expr bool) {
 
 func assertEqual[T comparable](t *testing.T, actual T, expected T) {
 	if actual != expected {
-		t.Fatalf("Expected value `%v`, got `%v` instead", actual, expected)
+		t.Fatalf("Expected value `%v`, got `%v` instead", expected, actual)
 	}
 }
 
 func assertNext[T comparable, I iter.Iterator[T]](t *testing.T, iter I, expected T) {
 	item, ok := iter.Next()
+	if !ok {
+		t.Fatal("Expected iterator to return a value")
+	}
+
+	assertEqual(t, item, expected)
+}
+
+func assertPeek[T comparable, I iter.Iterator[T]](t *testing.T, iter *iter.PeekableIterator[T, I], expected T) {
+	item, ok := iter.Peek()
 	if !ok {
 		t.Fatal("Expected iterator to return a value")
 	}
@@ -303,3 +312,17 @@ func TestZip(t *testing.T) {
 	// {0 0} false
 }
 */
+
+func TestPeekable(t *testing.T) {
+	xs := []int{1, 2, 3}
+	it := iter.Peekable[int](slices.NewIterator(xs))
+
+	assertPeek(t, it, 1)
+	assertNext(t, it, 1)
+	assertNext(t, it, 2)
+	assertPeek(t, it, 3)
+	assertPeek(t, it, 3)
+	assertNext(t, it, 3)
+	assertNone[int](t, it)
+	assertNone[int](t, it)
+}
