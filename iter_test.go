@@ -28,7 +28,7 @@ func assertNext[T comparable, I iter.Iterator[T]](t *testing.T, iter I, expected
 	assertEqual(t, item, expected)
 }
 
-func assertPeek[T comparable, I iter.Iterator[T]](t *testing.T, iter *iter.PeekableIterator[T, I], expected T) {
+func assertPeek[T comparable, I iter.Iterator[T]](t *testing.T, iter *iter.Peekable[T, I], expected T) {
 	item, ok := iter.Peek()
 	if !ok {
 		t.Fatal("Expected iterator to return a value")
@@ -315,7 +315,7 @@ func TestZip(t *testing.T) {
 
 func TestPeekable(t *testing.T) {
 	xs := []int{1, 2, 3}
-	it := iter.Peekable[int](slices.NewIterator(xs))
+	it := iter.NewPeekable[int](slices.NewIterator(xs))
 
 	assertPeek(t, it, 1)
 	assertNext(t, it, 1)

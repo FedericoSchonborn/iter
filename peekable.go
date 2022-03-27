@@ -1,18 +1,18 @@
 package iter
 
-type PeekableIterator[T any, I Iterator[T]] struct {
+type Peekable[T any, I Iterator[T]] struct {
 	inner   I
 	current T
 	peeked  bool
 }
 
-func Peekable[T any, I Iterator[T]](inner I) *PeekableIterator[T, I] {
-	return &PeekableIterator[T, I]{
+func NewPeekable[T any, I Iterator[T]](inner I) *Peekable[T, I] {
+	return &Peekable[T, I]{
 		inner: inner,
 	}
 }
 
-func (p *PeekableIterator[T, I]) Peek() (_ T, ok bool) {
+func (p *Peekable[T, I]) Peek() (_ T, ok bool) {
 	if p.peeked {
 		return p.current, true
 	}
@@ -28,7 +28,7 @@ func (p *PeekableIterator[T, I]) Peek() (_ T, ok bool) {
 	return value, true
 }
 
-func (p *PeekableIterator[T, I]) Next() (_ T, ok bool) {
+func (p *Peekable[T, I]) Next() (_ T, ok bool) {
 	if p.peeked {
 		var zero T
 
