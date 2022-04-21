@@ -2,32 +2,32 @@ package iter
 
 import "golang.org/x/exp/constraints"
 
-type InclusiveSeries[T constraints.Integer] struct {
+type InclusiveSeriesIterator[T constraints.Integer] struct {
 	start T
 	end   T
 	done  bool
 }
 
-func NewInclusiveSeries[T constraints.Integer](start, end T) *InclusiveSeries[T] {
-	return &InclusiveSeries[T]{
+func InclusiveSeries[T constraints.Integer](start, end T) *InclusiveSeriesIterator[T] {
+	return &InclusiveSeriesIterator[T]{
 		start: start,
 		end:   end,
 		done:  false,
 	}
 }
 
-func (is *InclusiveSeries[T]) Next() (_ T, ok bool) {
-	if is.done || is.start > is.end {
+func (isi *InclusiveSeriesIterator[T]) Next() (_ T, ok bool) {
+	if isi.done || isi.start > isi.end {
 		var zero T
 		return zero, false
 	}
 
-	if is.start < is.end {
-		start := is.start
-		is.start = start + T(1)
+	if isi.start < isi.end {
+		start := isi.start
+		isi.start = start + T(1)
 		return start, true
 	}
 
-	is.done = true
-	return is.start, true
+	isi.done = true
+	return isi.start, true
 }

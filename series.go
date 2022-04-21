@@ -2,22 +2,22 @@ package iter
 
 import "golang.org/x/exp/constraints"
 
-type Series[T constraints.Integer] struct {
+type SeriesIterator[T constraints.Integer] struct {
 	start T
 	end   T
 }
 
-func NewSeries[T constraints.Integer](start, end T) *Series[T] {
-	return &Series[T]{
+func Series[T constraints.Integer](start, end T) *SeriesIterator[T] {
+	return &SeriesIterator[T]{
 		start: start,
 		end:   end,
 	}
 }
 
-func (s *Series[T]) Next() (_ T, ok bool) {
-	if s.start < s.end {
-		start := s.start
-		s.start = start + T(1)
+func (si *SeriesIterator[T]) Next() (_ T, ok bool) {
+	if si.start < si.end {
+		start := si.start
+		si.start = start + T(1)
 		return start, true
 	}
 

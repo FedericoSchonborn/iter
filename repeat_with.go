@@ -1,15 +1,15 @@
 package iter
 
-type RepeatWith[T any] struct {
+type RepeatWithIterator[T any] struct {
 	fn func() T
 }
 
-func NewRepeatWith[T any](fn func() T) *RepeatWith[T] {
-	return &RepeatWith[T]{
+func RepeatWith[T any](fn func() T) *RepeatWithIterator[T] {
+	return &RepeatWithIterator[T]{
 		fn: fn,
 	}
 }
 
-func (rw *RepeatWith[T]) Next() (_ T, ok bool) {
-	return rw.fn(), true
+func (rwi *RepeatWithIterator[T]) Next() (_ T, ok bool) {
+	return rwi.fn(), true
 }

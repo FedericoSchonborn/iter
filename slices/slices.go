@@ -10,7 +10,7 @@ type Iterator[T any, S ~[]T] struct {
 	back  int
 }
 
-func NewIterator[T any, S ~[]T](slice S) *Iterator[T, S] {
+func IntoIterator[T any, S ~[]T](slice S) *Iterator[T, S] {
 	return &Iterator[T, S]{
 		inner: slice,
 		front: 0,

@@ -1,35 +1,35 @@
 package iter
 
-var _ Iterator[Enumerated[any]] = (*Enumerate[any, *Empty[any]])(nil)
+var _ Iterator[Enumerated[any]] = (*EnumerateIterator[any, *EmptyIterator[any]])(nil)
 
 type Enumerated[T any] struct {
 	Index int
 	Value T
 }
 
-type Enumerate[T any, I Iterator[T]] struct {
+type EnumerateIterator[T any, I Iterator[T]] struct {
 	iter  I
 	index int
 }
 
-func NewEnumerate[T any, I Iterator[T]](iter I) *Enumerate[T, I] {
-	return &Enumerate[T, I]{
+func Enumerate[T any, I Iterator[T]](iter I) *EnumerateIterator[T, I] {
+	return &EnumerateIterator[T, I]{
 		iter:  iter,
 		index: 0,
 	}
 }
 
-func (e *Enumerate[T, I]) Next() (_ Enumerated[T], ok bool) {
-	item, ok := e.iter.Next()
+func (ei *EnumerateIterator[T, I]) Next() (_ Enumerated[T], ok bool) {
+	item, ok := ei.iter.Next()
 	if !ok {
 		var zero Enumerated[T]
 		return zero, false
 	}
 
 	value := Enumerated[T]{
-		Index: e.index,
+		Index: ei.index,
 		Value: item,
 	}
-	e.index++
+	ei.index++
 	return value, true
 }

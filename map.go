@@ -1,23 +1,23 @@
 package iter
 
-type Map[T, B any, I Iterator[T]] struct {
+type MapIterator[T, B any, I Iterator[T]] struct {
 	iter I
 	fn   func(T) B
 }
 
-func NewMap[T, B any, I Iterator[T]](iter I, fn func(T) B) *Map[T, B, I] {
-	return &Map[T, B, I]{
+func Map[T, B any, I Iterator[T]](iter I, fn func(T) B) *MapIterator[T, B, I] {
+	return &MapIterator[T, B, I]{
 		iter: iter,
 		fn:   fn,
 	}
 }
 
-func (m *Map[T, B, I]) Next() (_ B, ok bool) {
-	item, ok := m.iter.Next()
+func (mi *MapIterator[T, B, I]) Next() (_ B, ok bool) {
+	item, ok := mi.iter.Next()
 	if !ok {
 		var zero B
 		return zero, false
 	}
 
-	return m.fn(item), true
+	return mi.fn(item), true
 }

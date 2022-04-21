@@ -1,42 +1,42 @@
 package iter
 
-type Peekable[T any, I Iterator[T]] struct {
+type PeekableIterator[T any, I Iterator[T]] struct {
 	inner   I
 	current T
 	peeked  bool
 }
 
-func NewPeekable[T any, I Iterator[T]](inner I) *Peekable[T, I] {
-	return &Peekable[T, I]{
+func Peekable[T any, I Iterator[T]](inner I) *PeekableIterator[T, I] {
+	return &PeekableIterator[T, I]{
 		inner: inner,
 	}
 }
 
-func (p *Peekable[T, I]) Peek() (_ T, ok bool) {
-	if p.peeked {
-		return p.current, true
+func (pi *PeekableIterator[T, I]) Peek() (_ T, ok bool) {
+	if pi.peeked {
+		return pi.current, true
 	}
 
-	value, ok := p.inner.Next()
+	value, ok := pi.inner.Next()
 	if !ok {
 		var zero T
 		return zero, false
 	}
 
-	p.current = value
-	p.peeked = true
+	pi.current = value
+	pi.peeked = true
 	return value, true
 }
 
-func (p *Peekable[T, I]) Next() (_ T, ok bool) {
-	if p.peeked {
+func (pi *PeekableIterator[T, I]) Next() (_ T, ok bool) {
+	if pi.peeked {
 		var zero T
 
-		value := p.current
-		p.current = zero
-		p.peeked = false
+		value := pi.current
+		pi.current = zero
+		pi.peeked = false
 		return value, true
 	}
 
-	return p.inner.Next()
+	return pi.inner.Next()
 }
