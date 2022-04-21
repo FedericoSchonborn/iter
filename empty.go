@@ -9,13 +9,11 @@ func NewEmpty[T any]() *Empty[T] {
 }
 
 func (*Empty[T]) Next() (_ T, ok bool) {
-	var zero T
-	return zero, false
+	return Zero[T](), false
 }
 
 func (*Empty[T]) NextBack() (_ T, ok bool) {
-	var zero T
-	return zero, false
+	return Zero[T](), false
 }
 
 func (*Empty[T]) Len() int {

@@ -5,41 +5,39 @@ import "github.com/FedericoSchonborn/go-iter"
 var _ iter.SizedBilateralIterator[any] = (*Iterator[any, []any])(nil)
 
 type Iterator[T any, S ~[]T] struct {
-	inner S
+	slice S
 	front int
 	back  int
 }
 
 func NewIterator[T any, S ~[]T](slice S) *Iterator[T, S] {
 	return &Iterator[T, S]{
-		inner: slice,
+		slice: slice,
 		front: 0,
 		back:  len(slice) - 1,
 	}
 }
 
 func (i *Iterator[T, S]) Next() (_ T, ok bool) {
-	if i.front >= len(i.inner) {
-		var zero T
-		return zero, false
+	if i.front >= len(i.slice) {
+		return iter.Zero[T](), false
 	}
 
-	item := i.inner[i.front]
+	next := i.slice[i.front]
 	i.front++
-	return item, true
+	return next, true
 }
 
 func (i *Iterator[T, S]) NextBack() (_ T, ok bool) {
 	if i.back < 0 {
-		var zero T
-		return zero, false
+		return iter.Zero[T](), false
 	}
 
-	item := i.inner[i.back]
+	next := i.slice[i.back]
 	i.back--
-	return item, true
+	return next, true
 }
 
 func (i *Iterator[T, S]) Len() int {
-	return len(i.inner)
+	return len(i.slice)
 }

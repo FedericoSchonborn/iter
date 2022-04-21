@@ -1,8 +1,8 @@
 package iter
 
 type Fuse[T any, I Iterator[T]] struct {
-	iter  I
-	fused bool
+	iter I
+	done bool
 }
 
 func NewFuse[T any, I Iterator[T]](iter I) *Fuse[T, I] {
@@ -12,16 +12,14 @@ func NewFuse[T any, I Iterator[T]](iter I) *Fuse[T, I] {
 }
 
 func (f *Fuse[T, I]) Next() (_ T, ok bool) {
-	item, ok := f.iter.Next()
+	if f.done {
+		return Zero[T](), false
+	}
+
+	next, ok := f.iter.Next()
 	if !ok {
-		var zero T
-		return zero, false
+		return Zero[T](), false
 	}
 
-	if f.fused {
-		var zero T
-		return zero, false
-	}
-
-	return item, true
+	return next, true
 }

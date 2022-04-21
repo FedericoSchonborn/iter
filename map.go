@@ -5,7 +5,7 @@ type Map[T, B any, I Iterator[T]] struct {
 	fn   func(T) B
 }
 
-func NewMap[T, B any, I Iterator[T]](iter I, fn func(T) B) *Map[T, B, I] {
+func NewMap[T, B any, I Iterator[T]](iter I, fn func(value T) B) *Map[T, B, I] {
 	return &Map[T, B, I]{
 		iter: iter,
 		fn:   fn,
@@ -13,11 +13,10 @@ func NewMap[T, B any, I Iterator[T]](iter I, fn func(T) B) *Map[T, B, I] {
 }
 
 func (m *Map[T, B, I]) Next() (_ B, ok bool) {
-	item, ok := m.iter.Next()
+	next, ok := m.iter.Next()
 	if !ok {
-		var zero B
-		return zero, false
+		return Zero[B](), false
 	}
 
-	return m.fn(item), true
+	return m.fn(next), true
 }

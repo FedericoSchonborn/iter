@@ -12,21 +12,25 @@ func New[L, R any, LI Iterator[L], RI Iterator[R]](left LI, right RI) *Zip[L, R,
 	}
 }
 
-func (z *Zip[L, R, LI, RI]) Next() (item struct {
+func (z *Zip[L, R, LI, RI]) Next() (_ struct {
 	Left  L
 	Right R
 }, ok bool) {
-	left, ok := z.left.Next()
-	if !ok {
-		return item, false
+	left, lok := z.left.Next()
+	right, rok := z.right.Next()
+	if !lok || !rok {
+		return Zero[struct {
+			Left  L
+			Right R
+		}](), false
 	}
 
-	right, ok := z.right.Next()
-	if !ok {
-		return item, false
+	next := struct {
+		Left  L
+		Right R
+	}{
+		left,
+		right,
 	}
-
-	item.Left = left
-	item.Right = right
-	return item, true
+	return next, true
 }

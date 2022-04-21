@@ -15,12 +15,11 @@ func NewSeries[T constraints.Integer](start, end T) *Series[T] {
 }
 
 func (s *Series[T]) Next() (_ T, ok bool) {
-	if s.start < s.end {
-		start := s.start
-		s.start = start + T(1)
-		return start, true
+	if s.start >= s.end {
+		return Zero[T](), false
 	}
 
-	var zero T
-	return zero, false
+	next := s.start
+	s.start++
+	return next, true
 }

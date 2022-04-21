@@ -1,7 +1,9 @@
 package strings
 
+import "github.com/FedericoSchonborn/go-iter"
+
 type RuneIndices struct {
-	inner []rune
+	runes []rune
 	len   int
 	index int
 }
@@ -9,22 +11,30 @@ type RuneIndices struct {
 func NewRuneIndices(s string) *RuneIndices {
 	r := []rune(s)
 	return &RuneIndices{
-		inner: r,
+		runes: r,
 		len:   len(r),
 		index: 0,
 	}
 }
 
-func (ri *RuneIndices) Next() (item struct {
+func (ri *RuneIndices) Next() (_ struct {
 	Index int
 	Rune  rune
 }, ok bool) {
 	if ri.index >= ri.len {
-		return item, false
+		return iter.Zero[struct {
+			Index int
+			Rune  rune
+		}](), false
 	}
 
-	item.Index = ri.index
-	item.Rune = ri.inner[ri.index]
+	next := struct {
+		Index int
+		Rune  rune
+	}{
+		ri.index,
+		ri.runes[ri.index],
+	}
 	ri.index++
-	return item, true
+	return next, true
 }

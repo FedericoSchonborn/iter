@@ -17,17 +17,25 @@ func NewEnumerate[T any, I Iterator[T]](iter I) *Enumerate[T, I] {
 	}
 }
 
-func (e *Enumerate[T, I]) Next() (item struct {
+func (e *Enumerate[T, I]) Next() (_ struct {
 	Index int
 	Value T
 }, ok bool) {
 	value, ok := e.iter.Next()
 	if !ok {
-		return item, false
+		return Zero[struct {
+			Index int
+			Value T
+		}](), false
 	}
 
-	item.Index = e.index
-	item.Value = value
+	next := struct {
+		Index int
+		Value T
+	}{
+		e.index,
+		value,
+	}
 	e.index++
-	return item, true
+	return next, true
 }

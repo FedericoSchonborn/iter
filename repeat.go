@@ -1,15 +1,15 @@
 package iter
 
 type Repeat[T any] struct {
-	item T
+	value T
 }
 
-func NewRepeat[T any](item T) *Repeat[T] {
+func NewRepeat[T any](value T) *Repeat[T] {
 	return &Repeat[T]{
-		item: item,
+		value: value,
 	}
 }
 
 func (r *Repeat[T]) Next() (_ T, ok bool) {
-	return r.item, true
+	return r.value, true
 }

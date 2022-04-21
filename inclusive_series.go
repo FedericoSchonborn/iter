@@ -17,17 +17,16 @@ func NewInclusiveSeries[T constraints.Integer](start, end T) *InclusiveSeries[T]
 }
 
 func (is *InclusiveSeries[T]) Next() (_ T, ok bool) {
-	if is.done || is.start > is.end {
-		var zero T
-		return zero, false
+	if is.done {
+		return Zero[T](), false
 	}
 
-	if is.start < is.end {
-		start := is.start
-		is.start = start + T(1)
-		return start, true
+	next := is.start
+	if is.start >= is.end {
+		is.done = true
+		return next, true
 	}
 
-	is.done = true
-	return is.start, true
+	is.start = next + T(1)
+	return next, true
 }

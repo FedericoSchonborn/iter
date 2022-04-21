@@ -5,25 +5,23 @@ type Take[T any, I Iterator[T]] struct {
 	count int
 }
 
-func NewTake[T any, I Iterator[T]](iter I, n int) *Take[T, I] {
+func NewTake[T any, I Iterator[T]](iter I, count int) *Take[T, I] {
 	return &Take[T, I]{
 		iter:  iter,
-		count: n,
+		count: count,
 	}
 }
 
 func (t *Take[T, I]) Next() (_ T, ok bool) {
 	if t.count <= 0 {
-		var zero T
-		return zero, false
+		return Zero[T](), false
 	}
 
-	item, ok := t.iter.Next()
+	next, ok := t.iter.Next()
 	if !ok {
-		var zero T
-		return zero, false
+		return Zero[T](), false
 	}
 
 	t.count--
-	return item, true
+	return next, true
 }

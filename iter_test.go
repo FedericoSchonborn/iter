@@ -20,21 +20,21 @@ func assertEqual[T comparable](t *testing.T, actual T, expected T) {
 }
 
 func assertNext[T comparable, I iter.Iterator[T]](t *testing.T, iter I, expected T) {
-	item, ok := iter.Next()
+	next, ok := iter.Next()
 	if !ok {
 		t.Fatal("Expected iterator to return a value")
 	}
 
-	assertEqual(t, item, expected)
+	assertEqual(t, next, expected)
 }
 
 func assertPeek[T comparable, I iter.Iterator[T]](t *testing.T, iter *iter.Peekable[T, I], expected T) {
-	item, ok := iter.Peek()
+	next, ok := iter.Peek()
 	if !ok {
 		t.Fatal("Expected iterator to return a value")
 	}
 
-	assertEqual(t, item, expected)
+	assertEqual(t, next, expected)
 }
 
 func assertNone[T any, I iter.Iterator[T]](t *testing.T, iter I) {
