@@ -1,30 +1,30 @@
 package iter
 
-type SuccessorsIterator[T any] struct {
+type Successors[T any] struct {
 	first   bool
 	current T
 	fn      func(T) (T, bool)
 }
 
-func Successors[T any](first T, fn func(T) (T, bool)) *SuccessorsIterator[T] {
-	return &SuccessorsIterator[T]{
+func NewSuccessors[T any](first T, fn func(T) (T, bool)) *Successors[T] {
+	return &Successors[T]{
 		first:   true,
 		current: first,
 		fn:      fn,
 	}
 }
 
-func (si *SuccessorsIterator[T]) Next() (_ T, ok bool) {
-	if si.first {
-		si.first = false
-		return si.current, true
+func (s *Successors[T]) Next() (_ T, ok bool) {
+	if s.first {
+		s.first = false
+		return s.current, true
 	}
 
-	si.current, ok = si.fn(si.current)
+	s.current, ok = s.fn(s.current)
 	if !ok {
 		var zero T
 		return zero, false
 	}
 
-	return si.current, true
+	return s.current, true
 }

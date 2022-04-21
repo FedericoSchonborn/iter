@@ -28,7 +28,7 @@ func assertNext[T comparable, I iter.Iterator[T]](t *testing.T, iter I, expected
 	assertEqual(t, item, expected)
 }
 
-func assertPeek[T comparable, I iter.Iterator[T]](t *testing.T, iter *iter.PeekableIterator[T, I], expected T) {
+func assertPeek[T comparable, I iter.Iterator[T]](t *testing.T, iter *iter.Peekable[T, I], expected T) {
 	item, ok := iter.Peek()
 	if !ok {
 		t.Fatal("Expected iterator to return a value")
@@ -45,7 +45,7 @@ func assertNone[T any, I iter.Iterator[T]](t *testing.T, iter I) {
 
 func TestIterator(t *testing.T) {
 	a := []int{1, 2, 3}
-	it := slices.IntoIterator(a)
+	it := slices.NewIterator(a)
 
 	assertNext(t, it, 1)
 	assertNext(t, it, 2)
@@ -57,7 +57,7 @@ func TestIterator(t *testing.T) {
 
 func TestAdvanceBy(t *testing.T) {
 	a := []int{1, 2, 3, 4}
-	it := slices.IntoIterator(a)
+	it := slices.NewIterator(a)
 
 	n, ok := iter.AdvanceBy[int](it, 2)
 	assertEqual(t, n, 0)
@@ -76,13 +76,13 @@ func TestAdvanceBy(t *testing.T) {
 
 func TestAll_Basic(t *testing.T) {
 	a := []int{1, 2, 3}
-	assert(t, iter.All(slices.IntoIterator(a), func(x int) bool { return x > 0 }))
-	assert(t, !iter.All(slices.IntoIterator(a), func(x int) bool { return x > 2 }))
+	assert(t, iter.All(slices.NewIterator(a), func(x int) bool { return x > 0 }))
+	assert(t, !iter.All(slices.NewIterator(a), func(x int) bool { return x > 2 }))
 }
 
 func TestAll_FirstFalse(t *testing.T) {
 	a := []int{1, 2, 3}
-	it := slices.IntoIterator(a)
+	it := slices.NewIterator(a)
 
 	assert(t, !iter.All(it, func(x int) bool { return x != 2 }))
 
@@ -315,7 +315,7 @@ func TestZip(t *testing.T) {
 
 func TestPeekable(t *testing.T) {
 	xs := []int{1, 2, 3}
-	it := iter.Peekable[int](slices.IntoIterator(xs))
+	it := iter.NewPeekable[int](slices.NewIterator(xs))
 
 	assertPeek(t, it, 1)
 	assertNext(t, it, 1)

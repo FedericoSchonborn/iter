@@ -5,10 +5,10 @@ import (
 	"github.com/FedericoSchonborn/go-iter/slices"
 )
 
-func Bytes(s string) iter.Iterator[byte] {
-	return slices.IntoIterator([]byte(s))
+func NewBytes(s string) iter.Iterator[byte] {
+	return slices.NewIterator([]byte(s))
 }
 
-func Runes(s string) iter.Iterator[rune] {
-	return slices.IntoIterator([]rune(s))
+func NewRunes(s string) iter.Iterator[rune] {
+	return slices.NewIterator([]rune(s))
 }
