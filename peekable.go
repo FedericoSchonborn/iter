@@ -9,6 +9,7 @@ type Peekable[T any, I Iterator[T]] struct {
 func NewPeekable[T any, I Iterator[T]](inner I) *Peekable[T, I] {
 	return &Peekable[T, I]{
 		iter: inner,
+		peek: true,
 	}
 }
 
