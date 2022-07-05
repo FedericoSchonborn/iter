@@ -3,8 +3,8 @@ package iter_test
 import (
 	"testing"
 
-	"github.com/FedericoSchonborn/go-iter"
-	"github.com/FedericoSchonborn/go-iter/slices"
+	"github.com/FedericoSchonborn/iter"
+	"github.com/FedericoSchonborn/iter/slices"
 )
 
 func assert(t *testing.T, expr bool) {

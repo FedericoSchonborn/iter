@@ -1,4 +1,4 @@
-module github.com/FedericoSchonborn/go-iter
+module github.com/FedericoSchonborn/iter
 
 go 1.18
 

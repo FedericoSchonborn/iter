@@ -1,8 +1,8 @@
 package strings
 
 import (
-	"github.com/FedericoSchonborn/go-iter"
-	"github.com/FedericoSchonborn/go-iter/slices"
+	"github.com/FedericoSchonborn/iter"
+	"github.com/FedericoSchonborn/iter/slices"
 )
 
 func NewBytes(s string) iter.Iterator[byte] {

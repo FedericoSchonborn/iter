@@ -1,6 +1,6 @@
 package slices
 
-import "github.com/FedericoSchonborn/go-iter"
+import "github.com/FedericoSchonborn/iter"
 
 var _ iter.SizedBilateralIterator[any] = (*Iterator[any, []any])(nil)
 
